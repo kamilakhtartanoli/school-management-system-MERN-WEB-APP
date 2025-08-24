@@ -1,7 +1,7 @@
 const { Class } = require("../model/class.model.js");
 const { Signup } = require("../model/signup.model");
 const { Students } = require("../model/Students.model");
-const {Teacher} = require('../model/teacher.model.js')
+const { Teacher } = require("../model/teacher.model.js");
 
 const signup = async (req, res) => {
   try {
@@ -10,6 +10,7 @@ const signup = async (req, res) => {
     if (existingemail) {
       return res.status(400).json({ message: "Email already exists" });
     }
+
     const newsignup = await Signup.create({
       name,
       email,
@@ -17,20 +18,23 @@ const signup = async (req, res) => {
       profilepic,
       role: "admin",
     });
+
     const token = newsignup.generateToken();
+
     res.status(200).json({
       message: "signup-successfully",
-      _id: newsignup._id,
-      name: newsignup.name,
-      email: newsignup.email,
-      password: newsignup.password,
       token,
+      admin: {
+        _id: newsignup._id,
+        name: newsignup.name,
+        email: newsignup.email,
+        photo: newsignup.profilepic, // ✅ consistent naming
+      },
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -43,16 +47,15 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid apassword" });
     }
     const token = user.generateToken();
-    res
-      .status(200)
-      .json({ 
-        message: "login successfully", 
-        token, role: user.role ,
-        admin:{
-          name:user.name,
-          photo:user.profilepic || ''
-        }
-      });
+    res.status(200).json({
+      message: "login successfully",
+      token,
+      role: user.role,
+      admin: {
+        name: user.name,
+        photo: user.profilepic || "",
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -100,7 +103,7 @@ const studentcount = async (req, res) => {
 const studentdata = async (req, res) => {
   try {
     const resp = await Students.find({});
-    res.status(200).json({ resp });
+    res.status(200).json(resp);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -108,15 +111,15 @@ const studentdata = async (req, res) => {
 
 const studentfee = async (req, res) => {
   try {
-    const { feepay } = req.body;
-    const updatedStudent = await Students.findByIdAndUpdate(req.params.id, {
-      feepay,
-    });
+    const updatedStudent = await Students.findByIdAndUpdate(
+      req.params.id,
+    );
     res.json(updatedStudent);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 const studentsdelete = async (req, res) => {
   try {
@@ -127,101 +130,107 @@ const studentsdelete = async (req, res) => {
   }
 };
 
-const Addteacher = async (req,res)=>{
+const Addteacher = async (req, res) => {
   try {
-   const {fullname , email , phone , subject } = req.body;
-   const teacher = await Teacher.create({
-   fullname , email , phone , subject
-   })
-   res.status(200).json({message:'teacher added',teacher})
+    const { fullname, email, phone, subject } = req.body;
+    const teacher = await Teacher.create({
+      fullname,
+      email,
+      phone,
+      subject,
+    });
+    res.status(200).json({ message: "teacher added", teacher });
   } catch (error) {
-    res.status(500).json({message:error.message})
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-const teachercount = async (req,res)=>{
+const teachercount = async (req, res) => {
   try {
-    const count = await Teacher.countDocuments()
-    res.status(200).json({count})
+    const count = await Teacher.countDocuments();
+    res.status(200).json({ count });
   } catch (error) {
-    res.status(500).json({message:error.message})
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-const teacherdata = async (req,res)=>{
+const teacherdata = async (req, res) => {
   try {
-    const data = await Teacher.find({})
-    res.status(200).json(data)
+    const data = await Teacher.find({});
+    res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({message:error.message})
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-const teacherdelete = async (req,res) =>{
+const teacherdelete = async (req, res) => {
   try {
-    await Teacher.findByIdAndDelete(req.params.id)
-    res.status(200).json({message:'teacher-deleted-successfully'})
+    await Teacher.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "teacher-deleted-successfully" });
   } catch (error) {
-    res.status(500).json({message:error.message})
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-const searchstudent = async (req,res)=>{
-   try {
+const searchstudent = async (req, res) => {
+  try {
     const query = req.query.q; // frontend will send ?q=Ali
 
     const students = await Students.find({
       $or: [
-        { name: { $regex: query, $options: "i" } },        // search in name
-        { fathername: { $regex: query, $options: "i" } },  // search in fathername
-        { studentid: { $regex: query, $options: "i" } }    // search in studentid
-      ]
+        { name: { $regex: query, $options: "i" } }, // search in name
+        { fathername: { $regex: query, $options: "i" } }, // search in fathername
+        { studentid: { $regex: query, $options: "i" } }, // search in studentid
+      ],
     });
 
     res.json(students);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
-const addclass = async (req,res)=>{
+const addclass = async (req, res) => {
   try {
-    const {classname , classteacher , section , classroom} = req.body;
+    const { classname, classteacher, section, classroom } = req.body;
     const resp = await Class.create({
-      classname,classteacher,section,classroom
-    })
-    res.status(200).json({message:"class-add-successfully",resp})
+      classname,
+      classteacher,
+      section,
+      classroom,
+    });
+    res.status(200).json({ message: "class-add-successfully", resp });
   } catch (error) {
-    res.status(500).json({message:error.message})
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-const classcount = async (req,res)=>{
+const classcount = async (req, res) => {
   try {
-    const count = await Class.countDocuments()
-    res.status(200).json({count})
+    const count = await Class.countDocuments();
+    res.status(200).json({ count });
   } catch (error) {
-    res.status(500).json({message:error.message})
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-const classdata = async (req,res) => {
+const classdata = async (req, res) => {
   try {
-    const data = await Class.find({})
-    res.status(200).json(data)
+    const data = await Class.find({});
+    res.status(200).json(data);
   } catch (error) {
-    res.status(500).josn({message:error.message})
+    res.status(500).josn({ message: error.message });
   }
-}
+};
 
-const classdelete = async (req,res) =>{
+const classdelete = async (req, res) => {
   try {
-    await Class.findByIdAndDelete(req.params.id)
-    res.status(200).json({message:'class-delete-successfully'})
+    await Class.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "class-delete-successfully" });
   } catch (error) {
-    res.status(500).json({message:error.message})
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
 module.exports = {
   signup,
@@ -241,5 +250,5 @@ module.exports = {
   addclass,
   classcount,
   classdata,
-  classdelete
+  classdelete,
 };
