@@ -9,7 +9,7 @@ const Findstudents = () => {
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.get(`http://localhost:8000/api/search?q=${query}`);
+      const res = await axios.get(`${import.meta.env.VITE_APIURL}/api/search?q=${query}`);
       setResults(res.data);
     } catch (err) {
       console.error("Error searching student:", err);
@@ -17,7 +17,7 @@ const Findstudents = () => {
   };
   const handlePayFee = async (id) => {
   try {
-    const res = await axios.put(`http://localhost:8000/api/studentdata/${id}`, {
+    const res = await axios.put(`${import.meta.env.VITE_APIURL}/api/studentdata/${id}`, {
       feepay: true, // send updated field
     });
 

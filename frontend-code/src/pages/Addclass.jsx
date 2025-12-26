@@ -12,7 +12,7 @@ const Addclass = () => {
   const addclass = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/api/addclass", {
+      await axios.post(`${import.meta.env.VITE_APIURL}/api/addclass`, {
         classname,
         classteacher,
         section,

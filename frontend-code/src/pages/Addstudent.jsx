@@ -13,7 +13,7 @@ const Addstudent = () => {
   const addstudent = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/api/students', {
+      await axios.post(`${import.meta.env.VITE_APIURL}/api/students`, {
         studentid,
         name,
         fathername,

@@ -7,7 +7,7 @@ const Classes = () => {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/classdata')
+        const res = await axios.get(`${import.meta.env.VITE_APIURL}/api/classdata`)
         setclassdata(res.data)
       } catch (err) {
         console.error('Error fetching class data:', err)
@@ -21,7 +21,7 @@ const Classes = () => {
       if (!window.confirm('Are you sure you want to delete this teacher?')) return
   
       try {
-        await axios.delete(`http://localhost:8000/api/classdelete/${id}`)
+        await axios.delete(`${import.meta.env.VITE_APIURL}/api/classdelete/${id}`)
   
         // Update state instantly
         setclassdata((prev) => prev.filter((teacher) => teacher._id !== id))

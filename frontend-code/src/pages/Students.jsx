@@ -6,7 +6,7 @@ const Students = () => {
 
   useEffect(() => {
     const studentalldata = async () => {
-      const res = await axios.get("http://localhost:8000/api/studentdata");
+      const res = await axios.get(`${import.meta.env.VITE_APIURL}/api/studentdata`);
       setstudentdata(res.data);
     };
     studentalldata();
@@ -15,7 +15,7 @@ const Students = () => {
   // ✅ Pay Fee
   const handlePayFee = async (id) => {
     try {
-      await axios.put(`http://localhost:8000/api/studentdata/${id}`, {
+      await axios.put(`${import.meta.env.VITE_APIURL}/api/studentdata/${id}`, {
         feepay: true,
       });
 
@@ -36,7 +36,7 @@ const Students = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:8000/api/studentdata/${id}`);
+      await axios.delete(`${import.meta.env.VITE_APIURL}/api/studentdata/${id}`);
 
       // Remove student from local state
       setstudentdata((prev) => prev.filter((student) => student._id !== id));

@@ -10,15 +10,15 @@ const Dashboard = () => {
   // JSON data for cards
   useEffect(()=>{
     const studentcounts = async () =>{
-      const res = await axios.get('http://localhost:8000/api/studentcount')
+      const res = await axios.get(`${import.meta.env.VITE_APIURL}/api/studentcount`)
       setstudentcount(res.data.count)
     }
     const teachercount = async ()=>{
-      const res = await axios.get('http://localhost:8000/api/teachercount')
+      const res = await axios.get(`${import.meta.env.VITE_APIURL}/api/teachercount`)
       setteachercount(res.data.count)
     }
     const classcount = async () =>{
-      const res = await axios.get('http://localhost:8000/api/classcount')
+      const res = await axios.get(`${import.meta.env.VITE_APIURL}/api/classcount`)
       setclasscount(res.data.count)
     }
 

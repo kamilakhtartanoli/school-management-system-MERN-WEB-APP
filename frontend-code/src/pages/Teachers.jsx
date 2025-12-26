@@ -7,7 +7,7 @@ const Teachers = () => {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/teacherdata')
+        const res = await axios.get(`${import.meta.env.VITE_APIURL}/api/teacherdata`)
         setteacherdata(res.data)
       } catch (err) {
         console.error('Error fetching teacher data:', err)
@@ -21,7 +21,7 @@ const Teachers = () => {
     if (!window.confirm('Are you sure you want to delete this teacher?')) return
 
     try {
-      await axios.delete(`http://localhost:8000/api/teacherdelete/${id}`)
+      await axios.delete(`${import.meta.env.VITE_APIURL}/api/teacherdelete/${id}`)
 
       // Update state instantly
       setteacherdata((prev) => prev.filter((teacher) => teacher._id !== id))

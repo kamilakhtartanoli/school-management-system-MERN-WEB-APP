@@ -12,7 +12,7 @@ const Addteacher = () => {
   const addteacher = async (e) => {
     e.preventDefault(); // ✅ correct spelling
     try {
-      await axios.post("http://localhost:8000/api/addteacher", {
+      await axios.post(`${import.meta.env.VITE_APIURL}/api/addteacher`, {
         fullname,
         subject,
         email,
